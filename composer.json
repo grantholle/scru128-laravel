@@ -17,8 +17,9 @@
     ],
     "require": {
         "php": "^8.4",
-        "spatie/laravel-package-tools": "^1.16",
-        "illuminate/contracts": "^11.0||^12.0||^13.0"
+        "grantholle/scru128": "^1.0",
+        "illuminate/contracts": "^11.0||^12.0||^13.0",
+        "spatie/laravel-package-tools": "^1.16"
     },
     "require-dev": {
         "laravel/pint": "^1.14",
@@ -34,8 +35,7 @@
     },
     "autoload": {
         "psr-4": {
-            "GrantHolle\\Scru128Laravel\\": "src/",
-            "GrantHolle\\Scru128Laravel\\Database\\Factories\\": "database/factories/"
+            "GrantHolle\\Scru128Laravel\\": "src/"
         }
     },
     "autoload-dev": {
@@ -63,10 +63,7 @@
         "laravel": {
             "providers": [
                 "GrantHolle\\Scru128Laravel\\Scru128LaravelServiceProvider"
-            ],
-            "aliases": {
-                "Scru128Laravel": "GrantHolle\\Scru128Laravel\\Facades\\Scru128Laravel"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",

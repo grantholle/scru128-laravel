@@ -1,59 +1,61 @@
-# Use SCRU128 ID's in your Laravel application.
+# SCRU128 IDs for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/grantholle/scru128-laravel.svg?style=flat-square)](https://packagist.org/packages/grantholle/scru128-laravel)
-[![GitHub Tests Action Status](https://github.com/spatie/package-scru128-laravel-laravel/actions/workflows/run-tests.yml/badge.svg)](https://github.com/grantholle/scru128-laravel/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://github.com/spatie/package-scru128-laravel-laravel/actions/workflows/fix-php-code-style-issues.yml/badge.svg)](https://github.com/grantholle/scru128-laravel/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Tests](https://github.com/grantholle/scru128-laravel/actions/workflows/run-tests.yml/badge.svg)](https://github.com/grantholle/scru128-laravel/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/grantholle/scru128-laravel.svg?style=flat-square)](https://packagist.org/packages/grantholle/scru128-laravel)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+Use [SCRU128](https://github.com/scru128/spec) identifiers as Eloquent primary keys, the same way you'd use Laravel's `HasUuids`. Built on [grantholle/scru128](https://github.com/grantholle/scru128).
 
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/scru128-laravel.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/scru128-laravel)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+SCRU128 IDs are 25-character, case-insensitive, time-sortable strings (`0372ijojuxuhjsfkeryi2mrtm`) with 128 bits of entropy.
 
 ## Installation
-
-You can install the package via composer:
 
 ```bash
 composer require grantholle/scru128-laravel
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="scru128-laravel-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="scru128-laravel-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="scru128-laravel-views"
-```
+No configuration needed.
 
 ## Usage
 
 ```php
-$scru128Laravel = new GrantHolle\Scru128Laravel();
-echo $scru128Laravel->echoPhrase('Hello, GrantHolle!');
+use GrantHolle\Scru128Laravel\Concerns\HasScru128Ids;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+    use HasScru128Ids;
+}
+```
+
+```php
+Schema::create('posts', function (Blueprint $table) {
+    $table->scru128(); // char('id', 25)->primary()
+    // ...
+});
+
+Schema::create('comments', function (Blueprint $table) {
+    $table->scru128();
+    $table->foreignScru128('post_id')->constrained();
+});
+```
+
+`scru128($column = 'id')` and `foreignScru128($column)` are Blueprint macros; the foreign variant behaves like `foreignUuid()`.
+
+On MySQL/MariaDB, IDs are lowercase base36, so an ASCII binary collation keeps the column and its indexes compact and makes comparisons cheaper:
+
+```php
+$table->scru128()->charset('ascii')->collation('ascii_bin');
+$table->foreignScru128('post_id')->charset('ascii')->collation('ascii_bin')->constrained();
+```
+
+The trait sets `$incrementing = false` and `$keyType = 'string'`, fills the key on create, and makes route model binding 404 on malformed IDs, exactly like `HasUuids`. Override `uniqueIds()` to generate IDs for additional columns:
+
+```php
+public function uniqueIds(): array
+{
+    return ['id', 'public_id'];
+}
 ```
 
 ## Testing
@@ -65,10 +67,6 @@ composer test
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 
