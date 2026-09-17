@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace GrantHolle\Scru128Laravel;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
+use GrantHolle\Scru128Laravel\Commands\Scru128LaravelCommand;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class Scru128LaravelServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -16,10 +16,10 @@ class SkeletonServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('skeleton')
+            ->name('scru128-laravel')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_migration_table_name_table')
-            ->hasCommand(SkeletonCommand::class);
+            ->hasMigration('create_scru128_laravel_table')
+            ->hasCommand(Scru128LaravelCommand::class);
     }
 }
