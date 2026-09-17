@@ -5,17 +5,11 @@ namespace GrantHolle\Scru128Laravel;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\ColumnDefinition;
 use Illuminate\Database\Schema\ForeignIdColumnDefinition;
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
-class Scru128LaravelServiceProvider extends PackageServiceProvider
+class Scru128LaravelServiceProvider extends ServiceProvider
 {
-    public function configurePackage(Package $package): void
-    {
-        $package->name('scru128-laravel');
-    }
-
-    public function packageBooted(): void
+    public function boot(): void
     {
         Blueprint::macro('scru128', function (string $column = 'id'): ColumnDefinition {
             /** @var Blueprint $this */
